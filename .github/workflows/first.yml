@@ -26,7 +26,7 @@ jobs:
           run: |
             echo "Building and testing"
         - name: Call second workflow
-          uses: ./.github/workflows/terraform.yml
+          uses: ./.github/workflows/uploadbucket.yml
           #with:
           #  arg1: value1
           #  arg2: value2
