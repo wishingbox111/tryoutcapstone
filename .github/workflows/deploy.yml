@@ -5,8 +5,8 @@ on:
   # Triggers the workflow on push or pull request events
   push:
     branches: '*'
-  pull_request:
-    branches: [ main ]
+  #pull_request:
+  #  branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
       # This step deploys the first YAML file using some tool or command
       - name: Deploy first YAML file
         run: |
-          echo "Deploying first.yaml"
+          echo "Deploying terraform.yaml"
 
   # This job deploys the second YAML file
   deploy-second:
@@ -38,4 +38,4 @@ jobs:
       # This step deploys the second YAML file using some tool or command
       - name: Deploy second YAML file
         run: |
-          echo "Deploying second.yaml"
+          echo "Deploying uploadbucket.yaml"
