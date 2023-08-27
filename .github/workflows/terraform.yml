@@ -29,7 +29,7 @@ jobs:
         # Syncs the repo with the S3 bucket
         - name: Sync with S3
           run: |
-            aws s3 sync /main s3://test-enchen --delete
+            aws s3 sync . s3://test-enchen --delete
             
         # can use aws s3 sync <LocalPath> <S3Uri> or <S3Uri> <LocalPath> or <S3Uri> <S3Uri>
         
