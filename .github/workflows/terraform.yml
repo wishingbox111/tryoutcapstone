@@ -29,7 +29,7 @@ jobs:
         # Syncs the repo with the S3 bucket
         - name: Sync with S3
           run: |
-            aws s3 sync . https://github.com/wishingbox111/tryoutcapstone-chen s3://test-enchen --exclude "*" --include "index.html"
+            aws s3 sync . https://github.com/wishingbox111/tryoutcapstone-chen s3://test-enchen --include "index.html"
             
 
         # this does not deploy -  i need to create a s3 myself first, this doesn't do anything?
