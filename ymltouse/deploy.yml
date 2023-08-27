@@ -1,4 +1,4 @@
-name: Deploy YAML files
+name: Deploy YAML files in sequence?? - deploy yml
 
 # Controls when the workflow will run
 on:
@@ -22,8 +22,11 @@ jobs:
     steps:
       # This step deploys the first YAML file using some tool or command
       - name: Deploy first YAML file
-        run: terraform.yml
+        run: |
           echo "Deploying terraform.yaml"
+          # This step deploys the first YAML file using some tool or command
+          aws terraform.yml
+
 
   # This job deploys the second YAML file
   deploy-second:
@@ -37,5 +40,5 @@ jobs:
     steps:
       # This step deploys the second YAML file using some tool or command
       - name: Deploy second YAML file
-        run: upload or update index.html
+        run: |
           echo "Deploying uploadbucket.yaml"
