@@ -1,3 +1,4 @@
+name: create bucket and upload file -- tested
 on:
     push:
       branches: '*'

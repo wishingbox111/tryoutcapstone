@@ -22,7 +22,7 @@ jobs:
     steps:
       # This step deploys the first YAML file using some tool or command
       - name: Deploy first YAML file
-        run: |
+        run: terraform.yml
           echo "Deploying terraform.yaml"
 
   # This job deploys the second YAML file
@@ -37,5 +37,5 @@ jobs:
     steps:
       # This step deploys the second YAML file using some tool or command
       - name: Deploy second YAML file
-        run: |
+        run: upload or update index.html
           echo "Deploying uploadbucket.yaml"

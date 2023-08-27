@@ -1,4 +1,4 @@
-name: upload or update index.html
+name: upload or update index.html - to use
 
 on:
     push:
