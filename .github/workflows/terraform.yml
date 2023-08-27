@@ -29,10 +29,10 @@ jobs:
         # Syncs the repo with the S3 bucket
         - name: Sync with S3
           run: |
-            aws s3 sync . s3://test-enchen --delete
+            aws s3 sync . s3://test-enchen --delete --exclude "*" --include "index.html"
             
         # can use aws s3 sync <LocalPath> <S3Uri> or <S3Uri> <LocalPath> or <S3Uri> <S3Uri>
-        
+        #. represents current repo
      
      # this does not deploy -  i need to create a s3 myself first, this doesn't do anything?
         #- name: Deploy static website to S3 bucket
