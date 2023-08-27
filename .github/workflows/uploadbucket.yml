@@ -28,7 +28,7 @@ jobs:
         # Syncs the repo with the S3 bucket, upload index.html
         - name: Sync with S3
           run: |
-            aws s3 sync . s3://${{ env.BUCKET_NAME }} --delete --exclude "*" --include "index.html"
+            aws s3 sync . s3://${{ vars.BUCKET_NAME }} --delete --exclude "*" --include "index.html"
             
         # can use aws s3 sync <LocalPath> <S3Uri> or <S3Uri> <LocalPath> or <S3Uri> <S3Uri>
         #. represents current repo
