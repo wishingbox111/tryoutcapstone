@@ -11,13 +11,37 @@ env:
      # Credentials for deployment to AWS
     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #S3 bucket name to create before running terrafrom? 
+
+    BUCKET_NAME: group1-terrastate-bucket-chen-2
+    
     # S3 bucket for the Terraform state
     BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}} 
 
+
 jobs:
+    create_bucket:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v3
+          with:
+
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+            aws-region: ap-southeast-1 #update S3 bucket region here
+          
+            # Installs AWS CLI version 2
+        - name: make s3 bucket with name in env
+          run: |
+            aws s3 mb s3://$BUCKET_NAME
+
+
     terraform:
       name: "Terraform Infrastructure"
       runs-on: ubuntu-latest
+      needs: create_bucket
       defaults:
           run:
             shell: bash
@@ -112,7 +136,7 @@ jobs:
         # Syncs the repo with the S3 bucket
         - name: Sync with S3
           run: |
-            aws s3 sync . s3://test-enchen --delete --exclude "*" --include "index.html"
+            aws s3 sync . s3://${{ vars.bucketname }} --delete --exclude "*" --include "index.html"
             
         # can use aws s3 sync <LocalPath> <S3Uri> or <S3Uri> <LocalPath> or <S3Uri> <S3Uri>
         #. represents current repo
