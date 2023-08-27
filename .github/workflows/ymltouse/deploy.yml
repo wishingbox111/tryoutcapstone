@@ -1,0 +1,41 @@
+name: Deploy YAML files
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+    branches: '*'
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This job deploys the first YAML file
+  deploy-first:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # This step deploys the first YAML file using some tool or command
+      - name: Deploy first YAML file
+        run: |
+          echo "Deploying first.yaml"
+
+  # This job deploys the second YAML file
+  deploy-second:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # This keyword specifies that this job depends on the completion and success of the previous job
+    needs: deploy-first
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # This step deploys the second YAML file using some tool or command
+      - name: Deploy second YAML file
+        run: |
+          echo "Deploying second.yaml"
