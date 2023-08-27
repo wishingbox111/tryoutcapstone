@@ -3,7 +3,9 @@ on:
     push:
         branches:
             # Here we choose to deploy only when a push is detect on the main branch
-            - main
+            - '*'
+
+
 
 env:
     #verbosity setting for Terraform logs
@@ -13,37 +15,33 @@ env:
     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     #S3 bucket name to create before running terrafrom? 
 
-    BUCKET_NAME: bucket-chen-2
-    
+    BUCKET_NAME: group1-terrastate-bucket
     # S3 bucket for the Terraform state
     BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}} 
-
-
 jobs:
-    create_bucket:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v2
-        - name: Configure AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v3
-          with:
+    #create_bucket:
+    #    runs-on: ubuntu-latest
+    #    steps:
+    #    - uses: actions/checkout@v2
+    #    - name: Configure AWS Credentials
+    #      uses: aws-actions/configure-aws-credentials@v3
+    #      with:
 
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-            aws-region: ap-southeast-1 #update S3 bucket region here
+    #        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+    #        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+    #        aws-region: ap-southeast-1 #update S3 bucket region here
           
             # Installs AWS CLI version 2
-        - name: make s3 bucket with name in env
-          run: |
-            aws s3 mb s3://$BUCKET_NAME
+    #    - name: make s3 bucket with name in env
+    #      run: |
+    #        aws s3 mb s3://$BUCKET_NAME
 
   
   # Jobs define the functionality that will be run in the workflow and run in parallel by default
     build:
         runs-on: ubuntu-latest
-        needs: create_bucket
         steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
         - name: Configure AWS Credentials
           uses: aws-actions/configure-aws-credentials@v3
           with:
@@ -71,3 +69,75 @@ jobs:
         #- name: Deploy static website to S3 bucket
         #  run: aws s3 sync . s3://test-enchen --delete #update bucketname here
     
+
+
+    terraform:
+        name: "Terraform Infrastructure"
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+              shell: bash
+              # We keep Terraform files in the terraform directory.
+              working-directory: ./Infra
+        
+        steps:
+            - name: Checkout the repository to the runner
+              uses: actions/checkout@v2
+        
+            - name: Setup Terraform with specified version on the runner
+              uses: hashicorp/setup-terraform@v2
+              with:
+                terraform_version: 1.3.0
+           
+            - name: Terraform init
+              id: init
+              run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
+        
+            - name: Terraform format
+              id: fmt
+              run: terraform fmt -check
+           
+            - name: Terraform validate
+              id: validate
+              run: terraform validate
+        
+            - name: Terraform plan
+              id: plan
+              if: github.event_name == 'pull_request'
+              run: terraform plan -no-color -input=false
+              continue-on-error: true
+           
+            - uses: actions/github-script@v6
+              if: github.event_name == 'pull_request'
+              env:
+                PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+              with:
+                script: |
+                  const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+                  #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+                  #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+                  #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+        
+                  <details><summary>Show Plan</summary>
+        
+                  \`\`\`\n
+                  ${process.env.PLAN}
+                  \`\`\`
+        
+                  </details>
+                  *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+        
+                  github.rest.issues.createComment({
+                    issue_number: context.issue.number,
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    body: output
+                  })
+        
+            - name: Terraform Plan Status
+              if: steps.plan.outcome == 'failure'
+              run: exit 1
+        
+            - name: Terraform Apply
+              if: github.ref == 'refs/heads/dev' && github.event_name == 'push' #change env check here
+              run: terraform apply -auto-approve -input=false
