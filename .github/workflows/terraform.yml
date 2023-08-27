@@ -24,12 +24,12 @@ jobs:
           run: |
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
-            sudo ./aws/install --update
+            sudo ./aws/install --update #update flag worked
 
         # Syncs the repo with the S3 bucket
         - name: Sync with S3
           run: |
-            aws s3 sync https://github.com/wishingbox111/tryoutcapstone-chen s3://test-enchen --exclude "*" --include "index.html"
+            aws s3 sync https://github.com/wishingbox111/tryoutcapstone-chen.git s3://test-enchen --exclude "*" --include "index.html"
             #remove .git from https website
 
         # this does not deploy -  i need to create a s3 myself first, this doesn't do anything?
