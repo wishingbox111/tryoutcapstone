@@ -35,4 +35,11 @@ jobs:
         # this does not deploy -  i need to create a s3 myself first, this doesn't do anything?
         #- name: Deploy static website to S3 bucket
         #  run: aws s3 sync . s3://test-enchen --delete #update bucketname here
-       
+        - name: Upload to S3
+          uses: shallwefootball/s3-upload-action@master
+          id: S3
+          with:
+            aws_key_id: ${{secrets.AWS_ACCESS_KEY_ID}}
+            aws_secret_access_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_bucket: test-enchen
+            source_dir: /*
