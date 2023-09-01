@@ -1,8 +1,8 @@
 name: upload or update index.html - to use
 
 on:
-    push:
-        branches: '*'
+    workflow_call:
+        # on workflow_call don't need branches: '*'
 
 
 jobs:
