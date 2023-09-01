@@ -9,10 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
   call-workflow1:
-    uses: ./.github/workflows/uploadbucket.yaml
+    uses: ./.github/workflows/uploadbucket.yml
   call-workflow2:
     if: ${{ always() }} # This will make your workflow2 executed even if workflow1 fails, remove this, if you want to run this only on success of workflow1
     needs: call-workflow1
-    uses: ./.github/workflows/node.yaml
+    uses: ./.github/workflows/node.yml
 
 # if this works , reference:https://stackoverflow.com/questions/73137473/how-do-i-run-githhub-actions-yaml-files-in-certain-order
