@@ -10,8 +10,10 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: '18.x'
-        - name: Run a one-line script
+        - name: Initiate npm
           run: npm init
+        - name: install npm
+          run: npm install
         - name: npm ci
           run: npm ci
         - name: npm build
