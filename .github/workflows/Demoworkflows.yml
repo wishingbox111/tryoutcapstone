@@ -1,26 +1,30 @@
 name: Demo1
 on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
+    push:
+        branches: [ "main" ]
+    
+env:
+    #verbosity setting for Terraform logs
+        TF_LOG: INFO
+         # Credentials for deployment to AWS
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        
+        workflow_dispatch:
 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: ap-southeast-1 #update S3 bucket region here
-          
-  call-workflow1:
-    uses: ./.github/workflows/uploadbucket.yml
-  call-workflow2:
-    if: ${{ always() }} # This will make your workflow2 executed even if workflow1 fails, remove this, if you want to run this only on success of workflow1
-    needs: call-workflow1
-    uses: ./.github/workflows/node.yml
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+         - uses: actions/checkout@v3
+        # name: Configure AWS Credentials - for some reason this does not work here:
+
+
+    call-workflow1:
+        uses: ./.github/workflows/uploadbucket.yml
+    call-workflow2:
+        if: ${{ always() }} # This will make your workflow2 executed even if workflow1 fails, remove this, if you want to run this only on success of workflow1
+        needs: call-workflow1
+        uses: ./.github/workflows/node.yml
 
 # if this works , reference:https://stackoverflow.com/questions/73137473/how-do-i-run-githhub-actions-yaml-files-in-certain-order
