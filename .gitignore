@@ -1,7 +1,7 @@
 
 
-*.json
-.node_module/*
+#for npm install express
+.node_modules/*
 
 
 # Local .terraform directories
