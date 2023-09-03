@@ -25,3 +25,8 @@ triggering deployment - https://docs.github.com/en/actions/deployment/about-depl
 
 on Ci, we'll only do pull request. 
 on CD, then we'll do pull request and then add the deployment
+
+
+snyk :
+need to git ignore this file?
+wishingbox111/tryoutcaptone-chen/path/to/file.ext
