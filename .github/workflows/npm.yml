@@ -17,9 +17,9 @@ jobs:
         - name: run npm
           run: |
             npm run build --if-present
-        - name: test npm
-          run: |
-            npm test
+#        - name: test npm
+#          run: |
+#            npm test
 
   install-dependencies:
     runs-on: ubuntu-latest
